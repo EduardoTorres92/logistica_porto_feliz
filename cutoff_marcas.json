@@ -1,0 +1,18 @@
+{
+  "LA FONTE": {
+    "cutoff_inicial": 392695.43,
+    "cutoff_final": 0.0
+  },
+  "PAPAIZ": {
+    "cutoff_inicial": 1058657.73,
+    "cutoff_final": 0.0
+  },
+  "SILVANA": {
+    "cutoff_inicial": 123630.95,
+    "cutoff_final": 0.0
+  },
+  "VAULT": {
+    "cutoff_inicial": 29857.46,
+    "cutoff_final": 0.0
+  }
+}
