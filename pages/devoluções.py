@@ -15,11 +15,48 @@ from plyer import notification
 import plotly.graph_objects as go
 from pathlib import Path
 
+# ==================== VERIFICAÇÃO DE AUTENTICAÇÃO ====================
 
-# 🎯 Configuração inicial da página
-st.set_page_config(page_title="Logística Assa Abloy", page_icon="🎯", layout="wide")
+# Verificar se o usuário está logado
+if 'logado' not in st.session_state:
+    st.session_state['logado'] = False
 
-st.title("📈 Dashboard CD - Devoluções")
+if not st.session_state.get('logado', False):
+    st.set_page_config(page_title="Acesso Negado", page_icon="🔒", layout="centered")
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.markdown("""
+        <div style='text-align: center; padding: 3rem 0;'>
+            <h1>🔒 Acesso Negado</h1>
+            <h3>Você precisa fazer login primeiro</h3>
+            <p>Por favor, acesse a página principal para fazer login.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        if st.button("🏠 Ir para Login", use_container_width=True):
+            st.switch_page("Faturamento.py")
+    
+    st.stop()
+
+# 🎯 Configuração inicial da página (após verificação de login)
+st.set_page_config(page_title="Logística Assa Abloy - Devoluções", page_icon="🎯", layout="wide")
+
+# Header com informações do usuário
+col_header1, col_header2 = st.columns([3, 1])
+
+with col_header1:
+    st.title("📈 Dashboard CD - Devoluções")
+
+with col_header2:
+    st.markdown(f"""
+    <div style='text-align: right; margin-top: 1rem;'>
+        <small>Usuário: <strong>{st.session_state.get('usuario', 'admin')}</strong></small>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    if st.button("🏠 Página Principal", type="secondary", use_container_width=True):
+        st.switch_page("Faturamento.py")
 
 # ==================== FUNÇÕES DE TRATAMENTO DE DADOS ====================
 

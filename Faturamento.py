@@ -18,11 +18,102 @@ import logging
 from tqdm import tqdm
 import json
 
+# ==================== SISTEMA DE AUTENTICAÇÃO ====================
 
-# 🎯 Configuração inicial da página
+def verificar_login():
+    """Verifica se o usuário está logado"""
+    return st.session_state.get('logado', False)
+
+def fazer_login(usuario, senha):
+    """Valida credenciais e autentica o usuário"""
+    if usuario == "admin" and senha == "Acesso@2025":
+        st.session_state['logado'] = True
+        st.session_state['usuario'] = usuario
+        return True
+    return False
+
+def fazer_logout():
+    """Realiza logout do usuário"""
+    st.session_state['logado'] = False
+    st.session_state['usuario'] = None
+    st.rerun()
+
+def tela_login():
+    """Exibe a tela de login"""
+    # Configuração da página para login
+    st.set_page_config(page_title="Login - Logística Assa Abloy", page_icon="🔐", layout="centered")
+    
+    # Centralizar o conteúdo
+    col1, col2, col3 = st.columns([1, 2, 1])
+    
+    with col2:
+        st.markdown("""
+        <div style='text-align: center; padding: 2rem 0;'>
+            <h1>🔐 Login Dashboard</h1>
+            <h3>Logística Assa Abloy</h3>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Formulário de login
+        with st.form("login_form"):
+            st.markdown("### Acesso ao Sistema")
+            
+            usuario = st.text_input("👤 Usuário", placeholder="Digite seu usuário")
+            senha = st.text_input("🔒 Senha", type="password", placeholder="Digite sua senha")
+            
+            col_btn1, col_btn2, col_btn3 = st.columns([1, 1, 1])
+            with col_btn2:
+                submit_button = st.form_submit_button("🚀 Entrar", use_container_width=True)
+            
+            if submit_button:
+                if not usuario or not senha:
+                    st.error("❌ Por favor, preencha todos os campos!")
+                elif fazer_login(usuario, senha):
+                    st.success("✅ Login realizado com sucesso!")
+                    st.rerun()
+                else:
+                    st.error("❌ Usuário ou senha incorretos!")
+        
+        # Informações adicionais
+        st.markdown("""
+        <div style='text-align: center; margin-top: 2rem; padding: 1rem; background-color: #f0f2f6; border-radius: 10px;'>
+            <small>
+                <strong>Dashboard de Logística</strong><br>
+                Sistema de acompanhamento de faturamento e devoluções<br>
+                <em>Versão 2025</em>
+            </small>
+        </div>
+        """, unsafe_allow_html=True)
+
+# ==================== VERIFICAÇÃO DE AUTENTICAÇÃO ====================
+
+# Inicializar session state
+if 'logado' not in st.session_state:
+    st.session_state['logado'] = False
+
+# Verificar se o usuário está logado
+if not verificar_login():
+    tela_login()
+    st.stop()
+
+# 🎯 Configuração inicial da página (após login)
 st.set_page_config(page_title="Logística Assa Abloy", page_icon="🎯", layout="wide")
 
-st.title("📈 Dashboard CD - 2025")
+# Header com informações do usuário e logout
+col_header1, col_header2 = st.columns([3, 1])
+
+with col_header1:
+    st.title("📈 Dashboard CD - 2025")
+
+with col_header2:
+    st.markdown(f"""
+    <div style='text-align: right; margin-top: 1rem;'>
+        <small>Usuário: <strong>{st.session_state.get('usuario', 'admin')}</strong></small>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    if st.button("🚪 Logout", type="secondary", use_container_width=True):
+        fazer_logout()
 
 # ==================== FUNÇÕES DE TRATAMENTO DE DADOS ====================
 
